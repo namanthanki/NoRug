@@ -8,8 +8,10 @@ contract LaunchPad {
         string memory name, 
         string memory symbol, 
         address[] memory whitelists,
-        uint256[] memory amounts
+        uint256[] memory amounts,
+        address[] memory _assets,
+        uint8[] memory _ratios
     ) external {
-        LaunchPool pool = new LaunchPool(msg.sender, name, symbol, whitelists, amounts);
+        LaunchPool pool = new LaunchPool(msg.sender, name, symbol, whitelists, amounts, _assets, _ratios);
     }
 }
