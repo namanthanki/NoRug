@@ -5,13 +5,16 @@ import {LaunchPool} from "./LaunchPool.sol";
 
 contract LaunchPad {
     function createLaunchPool(
-        string memory name, 
-        string memory symbol, 
+        string memory name,
+        string memory symbol,
+        uint256 saleStartTime,
+        uint256 saleDuration,
         address[] memory whitelists,
         uint256[] memory amounts,
         address[] memory _assets,
         uint8[] memory _ratios
     ) external {
-        LaunchPool pool = new LaunchPool(msg.sender, name, symbol, whitelists, amounts, _assets, _ratios);
+        LaunchPool pool =
+            new LaunchPool(msg.sender, name, symbol, saleStartTime, saleDuration, whitelists, amounts, _assets, _ratios);
     }
 }
