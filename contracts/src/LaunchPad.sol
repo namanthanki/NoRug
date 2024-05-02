@@ -4,6 +4,8 @@ pragma solidity 0.8.24;
 import {LaunchPool} from "./LaunchPool.sol";
 
 contract LaunchPad {
+    address[] launchPools;
+
     function createLaunchPool(
         string memory name,
         string memory symbol,
@@ -16,5 +18,10 @@ contract LaunchPad {
     ) external {
         LaunchPool pool =
             new LaunchPool(msg.sender, name, symbol, saleStartTime, saleDuration, whitelists, amounts, _assets, _ratios);
+        launchPools.push(address(pool));
+    }
+
+    function getLaunchPoolAddress(uint256 index) public view returns (address) {
+        return launchPools[index];
     }
 }

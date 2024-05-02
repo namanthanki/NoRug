@@ -6,14 +6,14 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract LaunchPool is ERC20, Ownable {
-    uint256 saleStartTime;
-    uint256 saleDuration;
-    address[] whitelist;
-    address[] assets;
-    uint256[] amounts;
-    uint8[] ratios;
+    uint256 public saleStartTime;
+    uint256 public saleDuration;
+    address[] public whitelist;
+    address[] public assets;
+    uint256[] public amounts;
+    uint8[] public ratios;
 
-    address[] buyers;
+    address[] public buyers;
     mapping(address => uint256) buyerAmounts;
 
     constructor(
@@ -52,15 +52,19 @@ contract LaunchPool is ERC20, Ownable {
             IERC20(asset).transferFrom(msg.sender, address(this), requiredAmount), "Failed to transfer asset tokens!"
         );
         if (block.timestamp >= saleStartTime && block.timestamp <= saleStartTime + saleDuration) {
-            mint(msg.sender, amount);
-        } else {
             buyers.push(msg.sender);
             buyerAmounts[msg.sender] = amount;
+        } else {
+            revert("Token sale has ended!");
         }
     }
 
     function airdrop() external onlyOwner {
         require(block.timestamp > saleStartTime + saleDuration, "Airdrop not available yet!");
+        for (uint256 i = 0; i < whitelist.length; i++) {
+            uint256 amount = amounts[i];
+            mint(whitelist[i], amount);
+        }
         for (uint256 i = 0; i < buyers.length; i++) {
             address buyer = buyers[i];
             uint256 amount = buyerAmounts[buyer];
