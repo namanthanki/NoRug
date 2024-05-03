@@ -6,6 +6,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract LaunchPool is ERC20 {
     string public project_desc;
+    uint256 public maxSupply;
+    uint256 public creatorSupply;
     uint256 public saleStartTime;
     uint256 public saleDuration;
     address[] public whitelist;
@@ -21,6 +23,8 @@ contract LaunchPool is ERC20 {
         string memory name,
         string memory symbol,
         string memory desc,
+        uint256 _maxSupply,
+        uint256 _creatorSupply,
         uint256 _saleStartTime,
         uint256 _saleDuration,
         address[] memory _whitelist,
@@ -29,6 +33,8 @@ contract LaunchPool is ERC20 {
         uint8[] memory _ratios
     ) ERC20(name, symbol) {
         project_desc = desc;
+        maxSupply = _maxSupply;
+        creatorSupply = _creatorSupply;
         saleStartTime = _saleStartTime;
         saleDuration = _saleDuration;
         whitelist = _whitelist;
