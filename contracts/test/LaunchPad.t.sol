@@ -12,8 +12,11 @@ contract LaunchPadTest is Test {
     address test = makeAddr("test");
     string name = "Test Pool";
     string symbol = "TP";
-    uint256 saleStartTime = block.timestamp;
-    uint256 saleDuration = 1000;
+    string desc = "https://www.google.com/";
+    uint256 maxSupply = 10000e18;
+    uint256 creatorSupply = 1000e18;
+    uint256 saleStartTime = block.timestamp + 100;
+    uint256 saleDuration = 86400 * 5;
     address[] whitelists = new address[](1);
     uint256[] amounts = new uint256[](1);
     address[] assets = new address[](1);
@@ -28,7 +31,19 @@ contract LaunchPadTest is Test {
         assets[0] = address(mock);
         ratios[0] = 1;
         vm.prank(test);
-        launchpad.createLaunchPool(name, symbol, saleStartTime, saleDuration, whitelists, amounts, assets, ratios);
+        launchpad.createLaunchPool(
+            name,
+            symbol,
+            desc,
+            maxSupply,
+            creatorSupply,
+            saleStartTime,
+            saleDuration,
+            whitelists,
+            amounts,
+            assets,
+            ratios
+        );
     }
 
     function testCreateLaunchPool() public view {
@@ -50,17 +65,18 @@ contract LaunchPadTest is Test {
         address poolAddress = launchpad.getLaunchPoolAddress(0);
         LaunchPool pool = LaunchPool(poolAddress);
         vm.startPrank(test);
+        vm.warp(block.timestamp + 1000);
         mock.approve(poolAddress, 100e18);
         pool.buy(address(mock), 100e18);
-        vm.warp(block.timestamp + 1100);
+        vm.warp(block.timestamp + 86410 * 5);
         pool.airdrop();
-        assertEq(pool.balanceOf(test), 200e18);
+        assertEq(pool.balanceOf(test), 100e18);
     }
 
     function testBuyAfterSaleEnded() public {
         address poolAddress = launchpad.getLaunchPoolAddress(0);
         LaunchPool pool = LaunchPool(poolAddress);
-        vm.warp(block.timestamp + 1100);
+        vm.warp(block.timestamp + 86450 * 5);
         vm.startPrank(test);
         mock.approve(poolAddress, 100e18);
         vm.expectRevert("Token sale has ended!");

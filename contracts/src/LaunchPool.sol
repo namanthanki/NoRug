@@ -1,38 +1,47 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract LaunchPool is ERC20, Ownable {
+contract LaunchPool is ERC20 {
+    string public project_desc;
+    uint256 public maxSupply;
+    uint256 public creatorSupply;
     uint256 public saleStartTime;
     uint256 public saleDuration;
     address[] public whitelist;
     address[] public assets;
     uint256[] public amounts;
     uint8[] public ratios;
+    bool public airdropped;
 
     address[] public buyers;
     mapping(address => uint256) buyerAmounts;
 
     constructor(
-        address initialOwner,
         string memory name,
         string memory symbol,
+        string memory desc,
+        uint256 _maxSupply,
+        uint256 _creatorSupply,
         uint256 _saleStartTime,
         uint256 _saleDuration,
         address[] memory _whitelist,
         uint256[] memory _amounts,
         address[] memory _assets,
         uint8[] memory _ratios
-    ) ERC20(name, symbol) Ownable(initialOwner) {
+    ) ERC20(name, symbol) {
+        project_desc = desc;
+        maxSupply = _maxSupply;
+        creatorSupply = _creatorSupply;
         saleStartTime = _saleStartTime;
         saleDuration = _saleDuration;
         whitelist = _whitelist;
         amounts = _amounts;
         assets = _assets;
         ratios = _ratios;
+        airdropped = false;
     }
 
     function buy(address asset, uint256 amount) external {
@@ -59,12 +68,13 @@ contract LaunchPool is ERC20, Ownable {
         }
     }
 
-    function airdrop() external onlyOwner {
+    function airdrop() external {
+        require(airdropped == false, "airdrop already took place, check your wallet");
         require(block.timestamp > saleStartTime + saleDuration, "Airdrop not available yet!");
-        for (uint256 i = 0; i < whitelist.length; i++) {
-            uint256 amount = amounts[i];
-            mint(whitelist[i], amount);
-        }
+        // for (uint256 i = 0; i < whitelist.length; i++) {
+        //     uint256 amount = amounts[i];
+        //     mint(whitelist[i], amount);
+        // }
         for (uint256 i = 0; i < buyers.length; i++) {
             address buyer = buyers[i];
             uint256 amount = buyerAmounts[buyer];
@@ -73,6 +83,7 @@ contract LaunchPool is ERC20, Ownable {
                 delete buyerAmounts[buyer];
             }
         }
+        airdropped = true;
     }
 
     function mint(address to, uint256 amount) internal {
