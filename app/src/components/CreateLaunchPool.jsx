@@ -1,307 +1,160 @@
 import React, { useState } from 'react';
+import gridBackground from '../assets/gridBackground.svg';
+const LaunchPoolForm = () => {
+    const [step, setStep] = useState(1);
+    const [name, setName] = useState('');
+    const [symbol, setSymbol] = useState('');
+    const [websiteLink, setWebsiteLink] = useState('');
+    const [contactLink, setContactLink] = useState('');
+    const [description, setDescription] = useState('');
+    const [totalSupply, setTotalSupply] = useState(0);
+    const [creatorSupply, setCreatorSupply] = useState(10);
+    const [whitelist, setWhitelist] = useState([{ address: '', amount: 0 }]);
+    const [publicTokens, setPublicTokens] = useState(0);
+    const [assetRatios, setAssetRatios] = useState(Array(5).fill(0));
+    const [saleStartTime, setSaleStartTime] = useState('');
+    const [saleDuration, setSaleDuration] = useState(5);
 
-const CreateLaunchPoolForm = () => {
-  // State for form fields
-  const [name, setName] = useState('');
-  const [symbol, setSymbol] = useState('');
-  const [link, setLink] = useState('');
-  const [totalSupply, setTotalSupply] = useState('');
-  const [creatorSupply, setCreatorSupply] = useState(30); // Initial value set to 30
-  const [whitelistEntries, setWhitelistEntries] = useState([{ address: '', amount: '' }]);
-  const [assetEntries, setAssetEntries] = useState([{ asset: '', ratio: '' }]);
-  const [saleStartTime, setSaleStartTime] = useState('');
-  const [saleDuration, setSaleDuration] = useState(5); // Initial value set to 5
-  const [publicTokenAmount, setPublicTokenAmount] = useState('');
+    const handleNext = () => setStep(step + 1);
+    const handleBack = () => setStep(step - 1);
+    const handleAddWhitelist = () => setWhitelist([...whitelist, { address: '', amount: 0 }]);
+    const handleRemoveWhitelist = index => setWhitelist(whitelist.filter((_, i) => i !== index));
+    const handleWhitelistChange = (index, key, value) => {
+        setWhitelist(whitelist.map((entry, i) =>
+            i === index ? { ...entry, [key]: value } : entry
+        ));
+        setPublicTokens((totalSupply - creatorSupply - whitelist.reduce((sum, entry) => sum + entry.amount, 0)) / 2);
+    };
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Your form submission logic goes here
-    console.log('Name:', name);
-    console.log('Symbol:', symbol);
-    console.log('Link:', link);
-    console.log('Total Supply:', totalSupply);
-    console.log('Creator Supply:', creatorSupply);
-    console.log('Whitelist Entries:', whitelistEntries);
-    console.log('Asset Entries:', assetEntries);
-    console.log('Sale Start Time:', saleStartTime);
-    console.log('Sale Duration:', saleDuration);
-    console.log('Public Token Amount:', publicTokenAmount);
-  };
+    const formStyle = "w-full px-4 py-2 bg-[#2a2a2a] border border-gray-700 text-gray-500";
+    const labelStyle = "block text-sm font-medium text-gray-400";
+    const steps = ["DETAILS", "SUPPLY", "TIMING", "ASSETS", "ACK"];
+    const stepSize = "w-12 h-12";
 
-  // Function to handle adding new whitelist entry
-  const addWhitelistEntry = () => {
-    setWhitelistEntries([...whitelistEntries, { address: '', amount: '' }]);
-  };
-
-  // Function to handle removing a whitelist entry
-  const removeWhitelistEntry = (index) => {
-    const updatedWhitelistEntries = [...whitelistEntries];
-    updatedWhitelistEntries.splice(index, 1);
-    setWhitelistEntries(updatedWhitelistEntries);
-  };
-
-  // Function to handle updating whitelist entry
-  const updateWhitelistEntry = (index, field, value) => {
-    const updatedWhitelistEntries = [...whitelistEntries];
-    updatedWhitelistEntries[index][field] = value;
-    setWhitelistEntries(updatedWhitelistEntries);
-  };
-
-  // Function to handle adding new asset entry
-  const addAssetEntry = () => {
-    setAssetEntries([...assetEntries, { asset: '', ratio: '' }]);
-  };
-
-  // Function to handle removing an asset entry
-  const removeAssetEntry = (index) => {
-    const updatedAssetEntries = [...assetEntries];
-    updatedAssetEntries.splice(index, 1);
-    setAssetEntries(updatedAssetEntries);
-  };
-
-  // Function to handle updating asset entry
-  const updateAssetEntry = (index, field, value) => {
-    const updatedAssetEntries = [...assetEntries];
-    updatedAssetEntries[index][field] = value;
-    setAssetEntries(updatedAssetEntries);
-  };
-
-  // Function to calculate public token amount
-  const calculatePublicTokenAmount = () => {
-    const whitelistSupply = whitelistEntries.reduce((total, entry) => total + parseInt(entry.amount), 0);
-    const availableSupply = totalSupply - creatorSupply - whitelistSupply;
-    const publicAmount = availableSupply / 2;
-    setPublicTokenAmount(publicAmount);
-  };
-
-  // Function to handle sale duration change
-  const handleSaleDurationChange = (e) => {
-    setSaleDuration(parseInt(e.target.value));
-  };
-
-  return (
-    <div className=" w-full h-full flex justify-center items-center bg-black z-50">
-      <div className="relative p-4 w-full max-w-2xl">
-        {/* Modal content */}
-        <div className="relative p-4 bg-[#1a1a1a] rounded-lg shadow sm:p-5">
-          {/* Modal header */}
-          <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b border-gray-600 sm:mb-5">
-            <h3 className="text-xl font-semibold text-white">
-              Create Launch Pool
-            </h3>
-          </div>
-          {/* Modal body */}
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 mb-4">
-              <div className="grid gap-4 grid-cols-2">
-                <div>
-                  <label htmlFor="name" className="block mb-2 text-lg font-medium text-white">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                    placeholder="Type launch pool name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-black font-mono" style={{ backgroundImage: `url(${gridBackground})` }}>
+            <div className="w-full max-w-md">
+                <div className="flex justify-between mb-6">
+                    {steps.map((label, index) => (
+                        <div key={index} className="text-center">
+                            <div className={`border-2 ${stepSize} flex items-center justify-center ${index < step ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a] border-gray-700'}`}>
+                                <span className="text-white font-bold">{index + 1}</span>
+                            </div>
+                            <p className="text-gray-400 text-sm mt-2">{label}</p>
+                        </div>
+                    ))}
                 </div>
-                <div>
-                  <label htmlFor="symbol" className="block mb-2 text-lg font-medium text-white">Symbol</label>
-                  <input
-                    type="text"
-                    id="symbol"
-                    className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                    placeholder="Type launch pool symbol"
-                    value={symbol}
-                    onChange={(e) => setSymbol(e.target.value)}
-                    required
-                  />
+                <div className="relative w-full">
+                    <div className="absolute inset-0 grid grid-cols-2 gap-4 opacity-20">
+                        <div className="h-full bg-gradient-to-r from-gray-900 to-black" />
+                        <div className="h-full bg-gradient-to-r from-black to-gray-900" />
+                        <div className="h-full bg-gradient-to-r from-black to-gray-900" />
+                        <div className="h-full bg-gradient-to-r from-gray-900 to-black" />
+                    </div>
+                    <form className="relative bg-[#1a1a1a] p-6 shadow-lg w-full min-h-[300px]">
+                        {step === 1 && (
+                            <>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>NAME</label>
+                                    <input type="text" value={name} onChange={e => setName(e.target.value)} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>SYMBOL</label>
+                                    <input type="text" value={symbol} onChange={e => setSymbol(e.target.value.toUpperCase())} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>WEBSITE LINK</label>
+                                    <input type="url" value={websiteLink} onChange={e => setWebsiteLink(e.target.value)} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>CONTACT LINK (DISCORD/TELEGRAM)</label>
+                                    <input type="url" value={contactLink} onChange={e => setContactLink(e.target.value)} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>PROJECT DESCRIPTION</label>
+                                    <textarea value={description} onChange={e => setDescription(e.target.value)} className={formStyle} />
+                                </div>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-full text-gray-100 bg-blue-500">NEXT</button>
+                            </>
+                        )}
+                        {step === 2 && (
+                            <>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>MAX SUPPLY</label>
+                                    <input type="number" value={totalSupply} onChange={e => setTotalSupply(Number(e.target.value))} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>CREATOR'S SUPPLY</label>
+                                    <input type="range" min="10" max="50" value={creatorSupply} onChange={e => setCreatorSupply(Number(e.target.value))} className="w-full" />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>WHITELIST</label>
+                                    {whitelist.map((entry, index) => (
+                                        <div key={index} className="flex items-center mb-2 gap-1">
+                                            <input type="text" placeholder="Address" value={entry.address} onChange={e => handleWhitelistChange(index, 'address', e.target.value)} className={formStyle} />
+                                            <input type="number" placeholder="Amount" value={entry.amount} onChange={e => handleWhitelistChange(index, 'amount', Number(e.target.value))} className={formStyle} />
+                                            <button type="button" onClick={() => handleRemoveWhitelist(index)} className="py-2 px-4 bg-red-500  text-gray-100">-</button>
+                                        </div>
+                                    ))}
+                                    <button type="button" onClick={handleAddWhitelist} className="py-2 px-4 w-full text-gray-100 bg-green-500 ">ADD</button>
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>PUBLIC TOKENS</label>
+                                    <input type="number" value={publicTokens} readOnly className={formStyle} />
+                                </div>
+                                <div className="w-full flex">
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 ">NEXT</button>
+                                </div>
+                            </>
+                        )}
+                        {step === 3 && (
+                            <>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>SALE START TIME</label>
+                                    <input type="datetime-local" value={saleStartTime} onChange={e => setSaleStartTime(e.target.value)} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
+                                    <label className={labelStyle}>SALE DURATION</label>
+                                    <input type="range" min="5" max="7" value={saleDuration} onChange={e => setSaleDuration(Number(e.target.value))} className="w-full" />
+                                </div>
+                                <div className="w-full flex">
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 transform hover:scale-105 transition duration-300 ease-in-out">NEXT</button>
+
+                                </div>
+                            </>
+                        )}
+                        {step === 4 && (
+                            <>
+                                {['USDC', 'USDT', 'ETH', 'BTC', 'BNB'].map((label, index) => (
+                                    <div className="mb-4" key={label}>
+                                        <label className={labelStyle}>{label} RATIO</label>
+                                        <input type="number" value={assetRatios[index]} onChange={e => {
+                                            const newRatios = [...assetRatios];
+                                            newRatios[index] = Number(e.target.value);
+                                            setAssetRatios(newRatios);
+                                        }} className={formStyle} />
+                                    </div>
+                                ))}
+                                <div className="w-full flex">
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 ">NEXT</button>
+                                </div>
+                            </>
+                        )}
+                        {step === 5 && (
+                            <div className="flex flex-col items-center justify-center text-center text-white min-h-[300px]">
+                                <p>LAUNCH POOL CREATED SUCCESSFULLY!</p>
+                                <button type="button" onClick={() => setStep(
+1)} className="py-2 px-4 text-gray-100 bg-blue-500 w-full mt-4">CREATE NEW</button>
+                            </div>
+                        )}
+                    </form>
                 </div>
-              </div>
-              <div>
-                <label htmlFor="link" className="block mb-2 text-lg font-medium text-white">Project Description</label>
-                <input
-                  type="text"
-                  id="link"
-                  className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                  placeholder="IPFS"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="totalSupply" className="block mb-2 text-lg font-medium text-white">Total Supply</label>
-                <input
-                  type="number"
-                  id="totalSupply"
-                  className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                  placeholder="Enter total supply"
-                  value={totalSupply}
-                  onChange={(e) => setTotalSupply(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="creatorSupply" className="block mb-2 text-lg font-medium text-white">Creator's Supply</label>
-                <input
-                  type="range"
-                  id="creatorSupply"
-                  min="10"
-                  max="50"
-                  step="1"
-                  className="block w-full p-2.5"
-                  value={creatorSupply}
-                  onChange={(e) => setCreatorSupply(Number(e.target.value))}
-                  style={{ background: 'linear-gradient(to right, #d1d5db, #d1d5db ' + ((creatorSupply - 10) / 40) * 100 + '%, #374151 ' + ((creatorSupply - 10) / 40) * 100 + '%, #374151)' }}
-                />
-                <div className="text-white text-sm text-center">{creatorSupply}</div>
-              </div>
-              {whitelistEntries.map((entry, index) => (
-                <div key={index} className="grid gap-4 grid-cols-3">
-                  <div>
-                    <label htmlFor={`whitelistAddress${index}`} className="block mb-2 text-lg font-medium text-white">Whitelist Address</label>
-                    <input
-                      type="text"
-                      id={`whitelistAddress${index}`}
-                      className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                      placeholder="Enter whitelist address"
-                      value={entry.address}
-                      onChange={(e) => updateWhitelistEntry(index, 'address', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor={`whitelistAmount${index}`} className="block mb-2 text-lg font-medium text-white">Whitelist Amount</label>
-                    <input
-                      type="number"
-                      id={`whitelistAmount${index}`}
-                      className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                      placeholder="Enter whitelist amount"
-                      value={entry.amount}
-                      onChange={(e) => updateWhitelistEntry(index, 'amount', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-col justify-end mt-8">
-                    <button
-                      type="button"
-                      onClick={() => removeWhitelistEntry(index)}
-                      className="text-white bg-red-600 hover:bg-red-700 px-3 py-2.5 rounded-lg mb-2"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <div className="grid grid-cols-1">
-                <button
-                  type="button"
-                  onClick={addWhitelistEntry}
-                  className="text-white bg-[#3a3a3a] hover:bg-[#2a2a2a] px-3 py-2.5 rounded-lg col-span-3"
-                >
-                  Add Whitelist Entry
-                </button>
-              </div>
-              {assetEntries.map((entry, index) => (
-                <div key={index} className="grid gap-4 grid-cols-3">
-                  <div>
-                    <label htmlFor={`asset${index}`} className="block mb-2 text-lg font-medium text-white">Asset</label>
-                    <select
-                      id={`asset${index}`}
-                      className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                      value={entry.asset}
-                      onChange={(e) => updateAssetEntry(index, 'asset', e.target.value)}
-                      required
-                    >
-                      {/* Options for asset selection */}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor={`ratio${index}`} className="block mb-2 text-lg font-medium text-white">Ratio</label>
-                    <input
-                      type="number"
-                      id={`ratio${index}`}
-                      className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                      placeholder="Enter ratio"
-                      value={entry.ratio}
-                      onChange={(e) => updateAssetEntry(index, 'ratio', e.target.value)}
-                      required
-                    />
-                    <div className="text-gray-400 text-sm">Helper text</div>
-                  </div>
-                  <div className="flex flex-col justify-end">
-                    <button
-                      type="button"
-                      onClick={() => removeAssetEntry(index)}
-                      className="text-white bg-red-600 hover:bg-red-700 px-3 py-2.5 rounded-lg mb-2"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <div className="grid grid-cols-1">
-                <button
-                  type="button"
-                  onClick={addAssetEntry}
-                  className="text-white bg-[#3a3a3a] hover:bg-[#2a2a2a] px-3 py-2.5 rounded-lg col-span-3"
-                >
-                  Add Asset Entry
-                </button>
-              </div>
-              <div className="grid gap-4 grid-cols-2">
-                <div>
-                  <label htmlFor="saleStartTime" className="block mb-2 text-lg font-medium text-white">Sale Start Time (UTC)</label>
-                  <input
-                    type="datetime-local"
-                    id="saleStartTime"
-                    className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                    value={saleStartTime}
-                    onChange={(e) => setSaleStartTime(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="saleDuration" className="block mb-2 text-lg font-medium text-white">Sale Duration (days)</label>
-                  <input
-                    type="range"
-                    id="saleDuration"
-                    min="5"
-                    max="7"
-                    step="1"
-                    className="block w-full p-2.5"
-                    value={saleDuration}
-                    onChange={handleSaleDurationChange}
-                    style={{ background: 'linear-gradient(to right, #d1d5db, #d1d5db ' + ((saleDuration - 5) / 2) * 100 + '%, #374151 ' + ((saleDuration - 5) / 2) * 100 + '%, #374151)' }}
-                  />
-                  <div className="text-white text-sm text-center">{saleDuration}</div>
-                </div>
-              </div>
-              <div>
-                <label htmlFor="publicTokenAmount" className="block mb-2 text-lg font-medium text-white">Public Token Amount</label>
-                <input
-                  type="number"
-                  id="publicTokenAmount"
-                  className="bg-[#2a2a2a] text-gray-100 text-md rounded-lg block w-full p-2.5"
-                  value={publicTokenAmount}
-                  onChange={(e) => setPublicTokenAmount(e.target.value)}
-                  required
-                  readOnly
-                />
-              </div>
             </div>
-            <button type="submit" className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-              <svg className="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
-              Create Launch Pool
-            </button>
-          </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default CreateLaunchPoolForm;
+export default LaunchPoolForm;
