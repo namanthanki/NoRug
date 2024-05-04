@@ -12,15 +12,13 @@ contract LaunchPadTest is Test {
     address test = makeAddr("test");
     string name = "Test Pool";
     string symbol = "TP";
-    string desc = "https://www.google.com/";
     uint256 maxSupply = 10000e18;
     uint256 creatorSupply = 1000e18;
     uint256 saleStartTime = block.timestamp + 100;
     uint256 saleDuration = 86400 * 5;
     address[] whitelists = new address[](1);
     uint256[] amounts = new uint256[](1);
-    address[] assets = new address[](1);
-    uint8[] ratios = new uint8[](1);
+    uint256[5] ratios = [10 * 10 ** 18, 10 * 10 ** 18, 10 * 10 ** 18, 10 * 10 ** 18, 10 * 10 ** 18];
 
     function setUp() public {
         launchpad = new LaunchPad();
@@ -28,21 +26,10 @@ contract LaunchPadTest is Test {
         mock = new ERC20Mock("mock", "mock", 100e18);
         whitelists[0] = test;
         amounts[0] = 100e18;
-        assets[0] = address(mock);
         ratios[0] = 1;
         vm.prank(test);
         launchpad.createLaunchPool(
-            name,
-            symbol,
-            desc,
-            maxSupply,
-            creatorSupply,
-            saleStartTime,
-            saleDuration,
-            whitelists,
-            amounts,
-            assets,
-            ratios
+            name, symbol, maxSupply, creatorSupply, saleStartTime, saleDuration, whitelists, amounts, ratios
         );
     }
 
@@ -67,7 +54,7 @@ contract LaunchPadTest is Test {
         vm.startPrank(test);
         vm.warp(block.timestamp + 1000);
         mock.approve(poolAddress, 100e18);
-        pool.buy(address(mock), 100e18);
+        pool.buy(0, 100e18);
         vm.warp(block.timestamp + 86410 * 5);
         pool.airdrop();
         assertEq(pool.balanceOf(test), 100e18);
@@ -80,7 +67,7 @@ contract LaunchPadTest is Test {
         vm.startPrank(test);
         mock.approve(poolAddress, 100e18);
         vm.expectRevert("Token sale has ended!");
-        pool.buy(address(mock), 100e18);
+        pool.buy(0, 100e18);
     }
 }
 
