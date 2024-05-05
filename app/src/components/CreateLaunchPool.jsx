@@ -94,7 +94,7 @@ const LaunchPoolForm = () => {
                                 <div className="mb-4">
                                     <label className={labelStyle}>CREATOR'S SUPPLY</label>
                                     <input type="range" min="10" max="50" value={creatorSupply} onChange={e => setCreatorSupply(Number(e.target.value))} className="w-full" />
-                                    <span className="text-gray-400 mt-8">{creatorSupply} TOKENS</span>
+                                    <span className="text-gray-400 mt-8">{creatorSupply}% TOKENS</span>
                                 </div>
 
                                 <div className="mb-4">
@@ -109,7 +109,7 @@ const LaunchPoolForm = () => {
                                     <button type="button" onClick={handleAddWhitelist} className="py-2 px-4 w-full text-[#2a2a2a] bg-green-500 ">ADD</button>
                                 </div>
                                 <div className="mb-4">
-                                    <label className={labelStyle}>PUBLIC TOKENS</label>
+                                    <label className={labelStyle}>PUBLIC TOKENS (%)</label>
                                     <input type="number" value={publicTokens} readOnly className={formStyle} />
                                 </div>
                                 <div className="w-full flex">
