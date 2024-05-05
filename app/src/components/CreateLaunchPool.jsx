@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import gridBackground from '../assets/gridBackground.svg';
+import Navbar from './Navbar';
 const LaunchPoolForm = () => {
     const [step, setStep] = useState(1);
     const [name, setName] = useState('');
@@ -32,12 +33,14 @@ const LaunchPoolForm = () => {
     const stepSize = "w-12 h-12";
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-black font-mono" style={{ backgroundImage: `url(${gridBackground})` }}>
+        <>
+        <Navbar />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-black font-fut" style={{ backgroundImage: `url(${gridBackground})` }}>
             <div className="w-full max-w-md">
                 <div className="flex justify-between mb-6">
                     {steps.map((label, index) => (
                         <div key={index} className="text-center">
-                            <div className={`border-2 ${stepSize} flex items-center justify-center ${index < step ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a] border-gray-700'}`}>
+                            <div className={`border-2 ${stepSize} flex items-center justify-center ${index < step ? 'bg-[#2a2a2a] border-green-500 text-green-500' : 'bg-[#1a1a1a] border-gray-700'}`}>
                                 <span className="text-white font-bold">{index + 1}</span>
                             </div>
                             <p className="text-gray-400 text-sm mt-2">{label}</p>
@@ -74,7 +77,7 @@ const LaunchPoolForm = () => {
                                     <label className={labelStyle}>PROJECT DESCRIPTION</label>
                                     <textarea value={description} onChange={e => setDescription(e.target.value)} className={formStyle} />
                                 </div>
-                                <button type="button" onClick={handleNext} className="py-2 px-4 w-full text-gray-100 bg-blue-500">NEXT</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-full text-[#2a2a2a] bg-white">NEXT</button>
                             </>
                         )}
                         {step === 2 && (
@@ -86,25 +89,27 @@ const LaunchPoolForm = () => {
                                 <div className="mb-4">
                                     <label className={labelStyle}>CREATOR'S SUPPLY</label>
                                     <input type="range" min="10" max="50" value={creatorSupply} onChange={e => setCreatorSupply(Number(e.target.value))} className="w-full" />
+                                    <span className="text-gray-400">{creatorSupply}</span>
                                 </div>
+
                                 <div className="mb-4">
                                     <label className={labelStyle}>WHITELIST</label>
                                     {whitelist.map((entry, index) => (
                                         <div key={index} className="flex items-center mb-2 gap-1">
                                             <input type="text" placeholder="Address" value={entry.address} onChange={e => handleWhitelistChange(index, 'address', e.target.value)} className={formStyle} />
                                             <input type="number" placeholder="Amount" value={entry.amount} onChange={e => handleWhitelistChange(index, 'amount', Number(e.target.value))} className={formStyle} />
-                                            <button type="button" onClick={() => handleRemoveWhitelist(index)} className="py-2 px-4 bg-red-500  text-gray-100">-</button>
+                                            <button type="button" onClick={() => handleRemoveWhitelist(index)} className="py-2 px-4 bg-red-500  text-[#2a2a2a]">-</button>
                                         </div>
                                     ))}
-                                    <button type="button" onClick={handleAddWhitelist} className="py-2 px-4 w-full text-gray-100 bg-green-500 ">ADD</button>
+                                    <button type="button" onClick={handleAddWhitelist} className="py-2 px-4 w-full text-[#2a2a2a] bg-green-500 ">ADD</button>
                                 </div>
                                 <div className="mb-4">
                                     <label className={labelStyle}>PUBLIC TOKENS</label>
                                     <input type="number" value={publicTokens} readOnly className={formStyle} />
                                 </div>
                                 <div className="w-full flex">
-                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
-                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 ">NEXT</button>
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-white ">NEXT</button>
                                 </div>
                             </>
                         )}
@@ -117,17 +122,18 @@ const LaunchPoolForm = () => {
                                 <div className="mb-4">
                                     <label className={labelStyle}>SALE DURATION</label>
                                     <input type="range" min="5" max="7" value={saleDuration} onChange={e => setSaleDuration(Number(e.target.value))} className="w-full" />
+                                    <span className="text-gray-400">{saleDuration}</span>
                                 </div>
                                 <div className="w-full flex">
-                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
-                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 transform hover:scale-105 transition duration-300 ease-in-out">NEXT</button>
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-white transform hover:scale-105 transition duration-300 ease-in-out">NEXT</button>
 
                                 </div>
                             </>
                         )}
                         {step === 4 && (
                             <>
-                                {['USDC', 'USDT', 'ETH', 'BTC', 'BNB'].map((label, index) => (
+                                {['NOTE', 'USDC', 'USDT', 'ETH', 'ATOM'].map((label, index) => (
                                     <div className="mb-4" key={label}>
                                         <label className={labelStyle}>{label} RATIO</label>
                                         <input type="number" value={assetRatios[index]} onChange={e => {
@@ -138,8 +144,8 @@ const LaunchPoolForm = () => {
                                     </div>
                                 ))}
                                 <div className="w-full flex">
-                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-gray-100 bg-gray-500  mr-2">BACK</button>
-                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-gray-100 bg-blue-500 ">NEXT</button>
+                                <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-gray-500  mr-2">BACK</button>
+                                <button type="button" onClick={handleNext} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-white ">NEXT</button>
                                 </div>
                             </>
                         )}
@@ -147,13 +153,14 @@ const LaunchPoolForm = () => {
                             <div className="flex flex-col items-center justify-center text-center text-white min-h-[300px]">
                                 <p>LAUNCH POOL CREATED SUCCESSFULLY!</p>
                                 <button type="button" onClick={() => setStep(
-1)} className="py-2 px-4 text-gray-100 bg-blue-500 w-full mt-4">CREATE NEW</button>
+1)} className="py-2 px-4 text-[#2a2a2a] bg-white w-full mt-4">CREATE NEW</button>
                             </div>
                         )}
                     </form>
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
