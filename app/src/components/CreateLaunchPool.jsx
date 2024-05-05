@@ -8,6 +8,7 @@ const LaunchPoolForm = () => {
     const [websiteLink, setWebsiteLink] = useState('');
     const [contactLink, setContactLink] = useState('');
     const [description, setDescription] = useState('');
+    const [logo, setLogo] = useState('');
     const [totalSupply, setTotalSupply] = useState(0);
     const [creatorSupply, setCreatorSupply] = useState(10);
     const [whitelist, setWhitelist] = useState([{ address: '', amount: 0 }]);
@@ -70,6 +71,10 @@ const LaunchPoolForm = () => {
                                     <input type="url" value={websiteLink} onChange={e => setWebsiteLink(e.target.value)} className={formStyle} />
                                 </div>
                                 <div className="mb-4">
+                                    <label className={labelStyle}>LOGO LINK</label>
+                                    <input type="url" value={logo} onChange={e => setLogo(e.target.value)} className={formStyle} />
+                                </div>
+                                <div className="mb-4">
                                     <label className={labelStyle}>CONTACT LINK (DISCORD/TELEGRAM)</label>
                                     <input type="url" value={contactLink} onChange={e => setContactLink(e.target.value)} className={formStyle} />
                                 </div>
@@ -89,7 +94,7 @@ const LaunchPoolForm = () => {
                                 <div className="mb-4">
                                     <label className={labelStyle}>CREATOR'S SUPPLY</label>
                                     <input type="range" min="10" max="50" value={creatorSupply} onChange={e => setCreatorSupply(Number(e.target.value))} className="w-full" />
-                                    <span className="text-gray-400">{creatorSupply}</span>
+                                    <span className="text-gray-400 mt-8">{creatorSupply} TOKENS</span>
                                 </div>
 
                                 <div className="mb-4">
@@ -122,7 +127,7 @@ const LaunchPoolForm = () => {
                                 <div className="mb-4">
                                     <label className={labelStyle}>SALE DURATION</label>
                                     <input type="range" min="5" max="7" value={saleDuration} onChange={e => setSaleDuration(Number(e.target.value))} className="w-full" />
-                                    <span className="text-gray-400">{saleDuration}</span>
+                                    <span className="text-gray-400">{saleDuration} days</span>
                                 </div>
                                 <div className="w-full flex">
                                 <button type="button" onClick={handleBack} className="py-2 px-4 w-1/2 text-[#2a2a2a] bg-gray-500  mr-2">BACK</button>
