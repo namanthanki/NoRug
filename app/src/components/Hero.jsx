@@ -15,7 +15,7 @@ const HeroSection = () => {
                         }}
                     />
                 </h1>
-                <p className="text-lg mb-8 text-gray-300">Innovative Launchpad Soltuion with Canto at Heart!</p>
+                <p className="text-lg mb-8 text-gray-300">Innovative Launchpad Solution with Canto at Heart!</p>
                 <Link to='/create'>
                 <button className="flex items-center justify-center py-3 px-6 bg-white text-[#2a2a2a] hover:scale-105 transition duration-300 ease-in-out">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
