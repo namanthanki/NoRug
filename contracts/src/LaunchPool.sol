@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.24;
+pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {CErc20} from "../lib/clm/src/CErc20.sol";
+import {Comptroller} from "../lib/clm/src/Comptroller.sol";
+import {BaseV1Router01} from "../lib/clm/src/Swap/BaseV1-periphery.sol";
 
 // This implementation is developed for Testnet only.
 contract LaunchPool is ERC20 {
@@ -76,7 +79,7 @@ contract LaunchPool is ERC20 {
             "Failed to transfer asset tokens!"
         );
         if (block.timestamp >= saleStartTime && block.timestamp <= saleStartTime + saleDuration) {
-            if(!exists[msg.sender]) {
+            if (!exists[msg.sender]) {
                 buyers.push(msg.sender);
                 exists[msg.sender] = true;
                 buyerAmounts[msg.sender] = amount;
