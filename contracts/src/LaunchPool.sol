@@ -5,19 +5,20 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {CErc20} from "../lib/clm/src/CErc20.sol";
 import {Comptroller} from "../lib/clm/src/Comptroller.sol";
+import {console} from "forge-std/Test.sol";
 
 interface BaseV1Router01 {
     function addLiquidity(
         address tokenA,
         address tokenB,
         bool stable,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB, uint liquidity);
+        uint256 deadline
+    ) external returns (uint256 amountA, uint256 amountB, uint256 liquidity);
 }
 
 // This implementation is developed for Testnet only.
@@ -156,7 +157,7 @@ contract LaunchPool is ERC20 {
         for (uint256 i = 0; i < assets.length; i++) {
             ERC20 underlying = ERC20(assets[i]);
             uint256 token_balance = underlying.balanceOf(address(this));
-            if(token_balance > 0) {
+            if (token_balance > 0) {
                 CErc20 cToken = CErc20(cTokenMapping[assets[i]]);
                 underlying.approve(address(cToken), token_balance);
                 assert(cToken.mint(token_balance) == 0);
@@ -164,17 +165,36 @@ contract LaunchPool is ERC20 {
         }
         // Checking Liquidity - Testnet address is being used
         Comptroller troll = Comptroller(0xA51436eF5D46EE56B0906DeC620466153f7fb77e);
-        (uint error, uint liquidity, uint shortfall) = troll.getAccountLiquidity(address(this));
+        (uint256 error, uint256 liquidity, uint256 shortfall) = troll.getAccountLiquidity(address(this));
+
+        console.log("Error: ", error);
+        console.log("Liquidity: ", liquidity);
+        console.log("Shortfall: ", shortfall);
+
         require(error == 0, "something went wrong");
         require(shortfall == 0, "negative liquidity balance");
         require(liquidity > 0, "there's not enough collateral");
         // Borrowing NOTE - Testnet cNOTE address is being used
         CErc20 cNOTE = CErc20(0x04E52476d318CdF739C38BD41A922787D441900c);
-        uint amt_borrow = liquidity - 1;
+        uint256 amt_borrow = liquidity - 1;
         require(cNOTE.borrow(amt_borrow) == 0, "there is not enough collateral");
         // Creating new pair on DEX - Testnet address is being used for Router as well as for NOTE
         BaseV1Router01 testnet_dex = BaseV1Router01(0x463e7d4DF8fE5fb42D024cb57c77b76e6e74417a);
-        (uint amountA, uint amountB, ) = testnet_dex.addLiquidity(address(this), 0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f, false, reservedSupply, amt_borrow, reservedSupply, amt_borrow, address(0), 16725205800);
+        (uint256 amountA, uint256 amountB,) = testnet_dex.addLiquidity(
+            address(this),
+            0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f,
+            false,
+            reservedSupply,
+            amt_borrow,
+            reservedSupply,
+            amt_borrow,
+            address(0),
+            16725205800
+        );
+
+        console.log("Amount A: ", amountA);
+        console.log("Amount B: ", amountB);
+
         require(amountA == reservedSupply && amountB == amt_borrow, "couldn't add liquidity as required");
     }
 }
