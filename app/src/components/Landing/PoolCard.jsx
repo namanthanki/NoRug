@@ -3,48 +3,70 @@ import { DollarCircleOutlined, PictureOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
-const PoolCard = () => {
-  return (
-    <Card style={{ borderRadius: 10 }}>
-      <div style={{ textAlign: "center" }}>
-        <PictureOutlined style={{ fontSize: 48, marginBottom: 16 }} />
+const PoolCard = ({ pool }) => (
+  <Card
+    hoverable
+    style={{
+      margin: "10px",
+      borderRadius: 10,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+    }}
+    bodyStyle={{
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    <Space direction="vertical" size="middle" style={{ width: "100%", height: "100%" }}>
+      <div>
+        <Space>
+          {pool.isLive && <Tag color="red">LIVE</Tag>}
+          {pool.isRefundable && <Tag color="blue">REFUNDABLE</Tag>}
+        </Space>
+        <Title level={3} style={{ margin: "8px 0" }}>
+          {pool.name}
+        </Title>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
-        <Tag color="red">LIVE</Tag>
-        <Tag color="blue">REFUNDABLE</Tag>
-      </div>
-      <Title level={3}>NAME</Title>
-      <Text style={{ display: "block", marginBottom: 16 }}>
-        Lorem Ipsum dolor Lorem Ipsum dolor Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum
-      </Text>
-      <Card style={{ backgroundColor: "#f5f5f5", borderRadius: 10, textAlign: "center" }}>
-        <Space direction="vertical">
+
+      <Card style={{ backgroundColor: "#f5f5f5", borderRadius: 10 }}>
+        <Space direction="vertical" align="center" style={{ width: "100%" }}>
           <DollarCircleOutlined style={{ fontSize: 32 }} />
-          <Title style={{ margin: 0 }} level={4}>
-            4,00,000 USDT
+          <Title level={4} style={{ margin: 0 }}>
+            {pool.targetedRaise}
           </Title>
           <Text type="secondary">Targeted Raise</Text>
         </Space>
       </Card>
-      <Divider />
-      <Text type="secondary">Token Price</Text>
-      <Title style={{ margin: 0 }} level={5}>
-        0.0159 USDT
-      </Title>
-      <Divider />
-      <Text type="secondary">From</Text>
-      <Title style={{ margin: 0 }} level={5}>
-        31 MAY 2024, 11AM UTC
-      </Title>
-      <Text type="secondary">To</Text>
-      <Title style={{ margin: 0 }} level={5}>
-        12 JUNE 2024, 1PM UTC
-      </Title>
-      <Button type="primary" block style={{ marginTop: 16 }}>
+
+      <div>
+        <Text type="secondary">Token Price</Text>
+        <Title level={5} style={{ margin: "4px 0" }}>
+          {pool.tokenPrice}
+        </Title>
+      </div>
+
+      <Space direction="vertical" style={{ width: "100%" }}>
+        <div>
+          <Text type="secondary">Start Date</Text>
+          <Title level={5} style={{ margin: "4px 0" }}>
+            {pool.startDate}
+          </Title>
+        </div>
+        <div>
+          <Text type="secondary">End Date</Text>
+          <Title level={5} style={{ margin: "4px 0" }}>
+            {pool.endDate}
+          </Title>
+        </div>
+      </Space>
+
+      <Button type="primary" size="large" block style={{ marginTop: "auto" }}>
         Participate
       </Button>
-    </Card>
-  );
-};
+    </Space>
+  </Card>
+);
 
 export default PoolCard;
