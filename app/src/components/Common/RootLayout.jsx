@@ -1,75 +1,3 @@
-// import { Button, Layout, theme } from "antd";
-// import { Outlet, NavLink } from "react-router-dom";
-
-// const { Header, Content, Footer } = Layout;
-
-// const RootLayout = () => {
-//   const {
-//     token: { colorBgContainer, colorBgHeader, colorBgFooter, borderRadiusLG },
-//   } = theme.useToken();
-
-//   return (
-//     <Layout
-//       style={{
-//         minHeight: "100vh",
-//       }}
-//     >
-//       <Header
-//         style={{
-//           position: "fixed",
-//           top: 0,
-//           left: 0,
-//           right: 0,
-//           zIndex: 10,
-//           display: "flex",
-//           justifyContent: "space-between",
-//           backgroundColor: colorBgHeader,
-//         }}
-//       >
-//         <div className="logo">
-//           <NavLink to="/">Logo</NavLink>
-//         </div>
-//         <div className="nav-links">
-//           <NavLink to="/create-pools">Create Pools</NavLink>
-//           <NavLink to="/token-sales">Token Sales</NavLink>
-//           <NavLink to="/profile">Profile</NavLink>
-//         </div>
-//         <div className="wallet-btn">
-//           <Button type="primary">Connect Wallet</Button>
-//         </div>
-//       </Header>
-//       <Content
-//         style={{
-//           padding: "0 50px",
-//           marginTop: 64,
-//           backgroundColor: colorBgContainer,
-//           borderRadius: borderRadiusLG,
-//           overflow: "initial",
-//         }}
-//       >
-//         <div
-//           style={{
-//             padding: 24,
-//             background: colorBgContainer,
-//             borderRadius: borderRadiusLG,
-//           }}
-//         >
-//           <Outlet />
-//         </div>
-//       </Content>
-//       <Footer
-//         style={{
-//           textAlign: "center",
-//         }}
-//       >
-//         NoRug ©{new Date().getFullYear()} Created by PsyCodeLabs
-//       </Footer>
-//     </Layout>
-//   );
-// };
-
-// export default RootLayout;
-
 import { Button, Layout, theme } from "antd";
 import { Outlet, NavLink } from "react-router-dom";
 
@@ -100,10 +28,7 @@ const RootLayout = () => {
         }}
       >
         <div className="logo">
-          <NavLink to="/">
-            {/* <img src="/logo.png" alt="Logo" style={{ height: "32px" }} /> */}
-            Logo
-          </NavLink>
+          <NavLink to="/">Logo</NavLink>
         </div>
         <div className="nav-links">
           <NavLink
@@ -118,7 +43,7 @@ const RootLayout = () => {
             Create Pools
           </NavLink>
           <NavLink
-            to="/token-sales"
+            to="/token-sales/dashboard"
             style={({ isActive }) => ({
               color: isActive ? "#1890ff" : "#fff",
               fontWeight: isActive ? "bold" : "normal",
