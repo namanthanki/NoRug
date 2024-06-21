@@ -1,5 +1,5 @@
 import { Divider, Space } from "antd";
-import { HeroSection, UpcomingPoolsCarousel } from "../components/Landing";
+import { FAQsSection, HeroSection, UpcomingPoolsCarousel } from "../components/Landing";
 
 const LandingPage = () => {
   return (
@@ -14,6 +14,8 @@ const LandingPage = () => {
         <HeroSection />
         <Divider />
         <UpcomingPoolsCarousel />
+        <Divider />
+        <FAQsSection />
       </Space>
     </div>
   );
